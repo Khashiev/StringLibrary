@@ -55,27 +55,30 @@ START_TEST(s21_strerror_test) {
 END_TEST
 
 START_TEST(s21_strncat_test) {
-  char dest[32], src[32];
+  char dest1[32], src1[32];
+  strcpy(dest1, "");
+  strcpy(src1, "");
+  ck_assert_str_eq(s21_strncat(dest1, src1, 0), strncat(dest1, src1, 0));
 
-  strcpy(dest, "");
-  strcpy(src, "");
-  ck_assert_str_eq(s21_strncat(dest, src, 0), strncat(dest, src, 0));
+  char dest2[32], src2[32];
+  strcpy(dest2, "Example");
+  strcpy(src2, "");
+  ck_assert_str_eq(s21_strncat(dest2, src2, 0), strncat(dest2, src2, 0));
 
-  strcpy(dest, "Example");
-  strcpy(src, "");
-  ck_assert_str_eq(s21_strncat(dest, src, 0), strncat(dest, src, 0));
+  char dest3[32], src3[32];
+  strcpy(dest3, "");
+  strcpy(src3, "bla");
+  ck_assert_str_eq(s21_strncat(dest3, src3, 0), strncat(dest3, src3, 0));
 
-  strcpy(dest, "");
-  strcpy(src, "bla");
-  ck_assert_str_eq(s21_strncat(dest, src, 0), strncat(dest, src, 0));
+  char dest4[32], src4[32];
+  strcpy(dest4, "Example");
+  strcpy(src4, "bla");
+  ck_assert_str_eq(s21_strncat(dest4, src4, 2), strncat(dest4, src4, 2));
 
-  strcpy(dest, "Example");
-  strcpy(src, "bla");
-  ck_assert_str_eq(s21_strncat(dest, src, 2), strncat(dest, src, 2));
-
-  strcpy(src, "Example");
-  strcpy(dest, "bla");
-  ck_assert_str_eq(s21_strncat(dest, src, 8), strncat(dest, src, 8));
+  char dest5[32], src5[32];
+  strcpy(dest5, "Example");
+  strcpy(src5, "bla");
+  ck_assert_str_eq(s21_strncat(dest5, src5, 8), strncat(dest5, src5, 8));
 }
 END_TEST
 
