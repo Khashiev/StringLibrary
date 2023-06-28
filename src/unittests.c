@@ -55,14 +55,27 @@ START_TEST(s21_strerror_test) {
 END_TEST
 
 START_TEST(s21_strncat_test) {
-  static char dest[] = "Example";
-  static char src[] = "bla";
+  char dest[32], src[32];
 
-  ck_assert_str_eq(s21_strncat("", "", 0), strncat("", "", 0));
-  ck_assert_str_eq(s21_strncat(dest, "", 0), strncat(dest, "", 0));
-  ck_assert_str_eq(s21_strncat("", src, 0), strncat("", src, 0));
-  ck_assert_str_eq(s21_strncat(dest, src, 5), strncat(dest, src, 5));
-  ck_assert_str_eq(s21_strncat(dest, dest, 8), strncat(dest, dest, 8));
+  strcpy(dest, "");
+  strcpy(src, "");
+  ck_assert_str_eq(s21_strncat(dest, src, 0), strncat(dest, src, 0));
+
+  strcpy(dest, "Example");
+  strcpy(src, "");
+  ck_assert_str_eq(s21_strncat(dest, src, 0), strncat(dest, src, 0));
+
+  strcpy(dest, "");
+  strcpy(src, "bla");
+  ck_assert_str_eq(s21_strncat(dest, src, 0), strncat(dest, src, 0));
+
+  strcpy(dest, "Example");
+  strcpy(src, "bla");
+  ck_assert_str_eq(s21_strncat(dest, src, 2), strncat(dest, src, 2));
+
+  strcpy(src, "Example");
+  strcpy(dest, "bla");
+  ck_assert_str_eq(s21_strncat(dest, src, 8), strncat(dest, src, 8));
 }
 END_TEST
 
@@ -114,7 +127,7 @@ int main(void) {
   int number_failed;
   Suite *suite = my_functions_suite();
   SRunner *runner = srunner_create(suite);
-  srunner_set_fork_status(runner, CK_NORMAL);
+  srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);
   number_failed = srunner_ntests_failed(runner);
   srunner_free(runner);
