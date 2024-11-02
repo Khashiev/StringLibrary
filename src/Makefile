@@ -1,20 +1,34 @@
-FLAGS = -Werror -Wall -Wextra -std=c11
+FLAGS=-Wall -Wextra -Werror -std=c11 -g
+LFLAGS=-lcheck -lm
 
-all: s21_string
+ifeq ($(shell uname), Linux)
+	LFLAGS=-lcheck -lm -lsubunit
+endif
 
-s21_string:
-	gcc $(FLAGS) s21_string.c -o s21_string
+all: s21_string.a
 
-test:
-	gcc $(FLAGS) -fsanitize=address $(FLAGS) s21_string.c unittests.c -lcheck -lm -lrt -lpthread -lsubunit -o test
+s21_string.a:
+	gcc -c $(FLAGS) s21_string.c
+	ar rc s21_string.a s21_string.o
+	ranlib s21_string.a
 
-sanTest: s21_string.c unittests.c
-	gcc -c s21_string.c unittests.c 
-	gcc s21_string.o unittests.o -lcheck -lm -lrt -lpthread -lsubunit -fsanitize=address
+test: s21_string.a
+	gcc $(FLAGS) -c unittests.c 
+	gcc $(FLAGS) unittests.o -L. s21_string.a $(LFLAGS) -o test
 
+rebuild: clean all
 
-rebuild: clean test 
+clean:
+	rm -rf report
+	rm -f s21_string.a *.o test* *.gcno *.gcda
+
+gcov_report: clean add_coverage test
 	./test
+	lcov -t "test" -o test.info -c -d .
+	genhtml -o report test.info
+	open report/index.html
 
-clean: 
-	rm test
+add_coverage:
+	$(eval FLAGS += --coverage)
+
+.PHONY: s21_string.a test rebuild clean gcov_report add_coverage
